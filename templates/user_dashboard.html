@@ -20,6 +20,7 @@
                 <div class="card">
                     <div class="card-header">
                         Bienvenido, {{ session['username'] }}! - Consumo de Energía
+                        <button type="button" class="btn btn-outline-danger" id="cerrarSesion" style="float: right;">Cerrar sesión</button>
                     </div>
                     <div class="card-body">
                         <div id="energy-chart"></div>
@@ -47,14 +48,15 @@
                     <tbody>
                         {% set min_length = [consumption_data.daily|length, consumption_data.weekly|length, consumption_data.monthly|length, consumption_data.annual|length]|min %}
                         {% for i in range(min_length) %}
+                        {% set current_year = 2024 %}
                     <tr>
-                        <td>Consumo</td>
-                        <td>{{ consumption_data.daily[i] }} kWh</td>
-                        <td>{{ consumption_data.weekly[i] }} kWh</td>
-                        <td>${{ (consumption_data.weekly[i] * 0.80) | round(2) }}</td>
-                        <td>{{ consumption_data.monthly[i] }} kWh</td>
-                        <td>${{ (consumption_data.monthly[i] * 0.80) | round(2)}}</td>
-                        <td>{{ consumption_data.annual[i] }} kWh</td>
+                        <td>Consumo para el año {{ current_year - i }}</td>
+                        <td>{{ (consumption_data.annual[i] / 365) | round(2) }} kWh</td>
+                        <td>{{ (consumption_data.annual[i] / 52) | round(2) }} kWh</td>
+                        <td>${{ ((consumption_data.annual[i] / 52)*0.80) | round(2) }}</td>
+                        <td>{{ (consumption_data.annual[i] / 12) | round(2) }} kWh</td>
+                        <td>${{ ((consumption_data.annual[i] / 12)*0.80) | round(2)}}</td>
+                        <td>{{ consumption_data.annual[i] | round(2) }} kWh</td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -111,6 +113,10 @@
         };
 
         Plotly.newPlot('energy-chart', data, layout);
+
+        document.getElementById("cerrarSesion").addEventListener("click", function() {
+            window.location.href = "{{ url_for('logout') }}";
+        });
     </script>
 
 </body>
