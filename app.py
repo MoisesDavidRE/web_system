@@ -8,13 +8,13 @@ app = Flask(__name__)
 
 # Configuración de la base de datos
 config = {
-    "host": "127.0.0.1",
-    "port": 3306,
-    "user": "root",
-    "password": "",
-    "database": "web_system",  # Asegúrate de definir el nombre de la base de datos
+    "host": "GuadalupeGT.mysql.pythonanywhere-services.com",
+    "user": "GuadalupeGT",
+    "password": "D@t4bAs3_paSs",
+    "database": "GuadalupeGT$default",
     "ssl_disabled": True
 }
+app.secret_key = 'super_secret_key'
 mysql = cnx.connect(**config)
 
 @app.route('/')
@@ -123,6 +123,8 @@ def obtener_consumo_de_energia(user_id):
         'annual': annual_consumption
     }
 
-if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.run(debug=True)
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('role', None)
+    return render_template('index.html')
